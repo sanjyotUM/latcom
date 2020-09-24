@@ -1,0 +1,2 @@
+model_checkpoint_path: "nvidia_e10_bsize_128"
+all_model_checkpoint_paths: "nvidia_e10_bsize_128"
