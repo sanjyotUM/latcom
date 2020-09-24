@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import tensorflow as tf
 import tensorflow_addons as tfa
 
@@ -61,6 +63,26 @@ def remove_reverse_commands(df):
     """
 
     return df[df['reverse'] == 0.0]
+
+
+def extract_datetime(fname):
+    """
+    Extract the datetime from the file name
+
+    Parameters
+    ----------
+    fname : str
+        File name encoding the datetime information
+
+    Returns
+    -------
+    datetime
+
+    """
+
+    data = fname.split('.jpg')[0].split('_')[1:]
+    data = [int(x) for x in data]
+    return datetime(*data)
 
 
 def downsample_zero_steering(df, ratio=0.9):
