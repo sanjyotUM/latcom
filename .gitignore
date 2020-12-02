@@ -2,3 +2,8 @@
 .ipynb_checkpoints
 __pycache__/
 dataset/
+models/
+logs/
+results/
+profile/
+*.pyc

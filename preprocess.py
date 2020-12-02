@@ -1,7 +1,8 @@
 from datetime import datetime
+from pathlib import Path
 
 import tensorflow as tf
-import tensorflow_addons as tfa
+# import tensorflow_addons as tfa
 
 
 def get_fname(path):
@@ -139,14 +140,14 @@ def preprocess_labels(df, downsample_ratio):
         .pipe(remove_reverse_commands)
         .pipe(downsample_zero_steering, ratio=downsample_ratio)
     )
-    print(f'\nOriginal size: {len(df)} | New size: {len(df_new)}')
-    print(f'Size reduced to {round(len(df_new) * 100.0 / len(df), 2)}%')
+    # print(f'\nOriginal size: {len(df)} | New size: {len(df_new)}')
+    # print(f'Size reduced to {round(len(df_new) * 100.0 / len(df), 2)}%')
     return df_new
 
 
 def preprocess_image(img_path,
-                     orig_shape=(160, 320),
-                     final_shape=(100, 100)):
+                     orig_shape=(210, 800),
+                     final_shape=(40, 80)):
     """
     Read, crop and preprocess the image
 
@@ -156,10 +157,10 @@ def preprocess_image(img_path,
         Absolute path of the jpg image
 
     orig_shape : tuple
-        (width, height) of original image
+        (height, width) of original image
 
     final_shape : tuple
-        (width, height) of final image
+        (height, width) of final image
 
 
     Returns
@@ -169,18 +170,24 @@ def preprocess_image(img_path,
     """
 
     height, width = orig_shape
-    crop_window = tf.constant([60, 0, 75, width], dtype=tf.int32)
+    crop_y = 30
+    rightside_width_cut = 700
+    crop_window = tf.constant([crop_y, 0, height - crop_y, rightside_width_cut], dtype=tf.int32)
 
+    if isinstance(img_path, Path):
+        img_path = str(img_path)
     img = tf.io.read_file(img_path)  # Read
+    return preprocess_opened_image(img, final_shape=final_shape, crop_window=crop_window)
+
+
+def preprocess_opened_image(img, crop_window, final_shape):
     img = tf.io.decode_and_crop_jpeg(img, crop_window=crop_window)  # Decode and crop
-    img = tfa.image.gaussian_filter2d(img, filter_shape=(3, 3))  # Blur
+    # img = tfa.image.gaussian_filter2d(img, filter_shape=(3, 3))  # Blur
     img = tf.image.resize(img, size=final_shape)  # Resize
     img = tf.divide(img, tf.constant(255.0))  # Normalize
-    img = tf.image.rgb_to_yuv(img)  # Convert to YUV space
+    # img = tf.image.rgb_to_yuv(img)  # Convert to YUV space
     return img
 
 
 if __name__ == '__main__':
     pass
-
-

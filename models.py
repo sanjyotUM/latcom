@@ -1,5 +1,6 @@
 import tensorflow as tf
-import tensorflow.keras.layers as layers
+import keras
+from keras import layers, optimizers
 
 
 def load_resnet_based(input_shape=(100, 100, 3), learning_rate=1e-3):
@@ -29,7 +30,7 @@ def load_resnet_based(input_shape=(100, 100, 3), learning_rate=1e-3):
 
     for x in resnet.layers[-4:]:
         x.trainable = True
-        print(f'Layer: {x.name} | Parameters: {x.count_params()}')
+        # print(f'Layer: {x.name} | Parameters: {x.count_params()}')
 
     # Add Dense layers
     model = tf.keras.Sequential([
@@ -65,6 +66,7 @@ def load_nvidia(input_shape=(100, 100, 3), learning_rate=1e-3):
     ----------
     input_shape : tuple
         Input image shape (height, width, channels)
+
     learning_rate : float
         Model learning rate
 
@@ -74,22 +76,22 @@ def load_nvidia(input_shape=(100, 100, 3), learning_rate=1e-3):
 
     """
 
-    model = tf.keras.Sequential([
-        layers.Conv2D(24, 5, 2, padding='same', input_shape=input_shape, activation='relu'),
-        layers.Conv2D(36, 5, 2, padding='same', activation='relu'),
-        layers.Conv2D(48, 5, 2, padding='same', activation='relu'),
-        layers.Conv2D(64, 3, 2, padding='same', activation='relu'),
-        layers.Conv2D(64, 3, 2, padding='same', activation='relu'),
+    model = keras.Sequential([
+        layers.Conv2D(24, kernel_size=5, strides=2, padding='same', input_shape=input_shape, activation='relu'),
+        layers.Conv2D(36, kernel_size=5, strides=2, padding='same', activation='relu'),
+        layers.Conv2D(48, kernel_size=5, strides=2, padding='same', activation='relu'),
+        layers.Conv2D(64, kernel_size=3, strides=2, padding='same', activation='relu'),
+        layers.Conv2D(64, kernel_size=3, strides=2, padding='same', activation='relu'),
         layers.Flatten(),
         layers.Dense(100, activation='relu'),
         layers.Dense(50, activation='relu'),
         layers.Dense(10, activation='relu'),
-        layers.Dense(1, activation='tanh')
+        layers.Dense(1)
     ])
 
     model.compile(
         loss='mse',
-        optimizer=tf.keras.optimizers.Adam(learning_rate=learning_rate),
+        optimizer=optimizers.Adam(learning_rate=learning_rate),
         metrics=['mse']
     )
     return model
