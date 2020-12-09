@@ -12,7 +12,7 @@ import h5py
 from preprocess import preprocess_image
 
 current_dir = os.getcwd()
-os.chdir('../ce491-2019/final_project/neural_net')
+os.chdir('../../jaerock/oscar/neural_net')
 from config import Config
 os.chdir(current_dir)
 
