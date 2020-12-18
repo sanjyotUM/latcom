@@ -11,12 +11,10 @@ import tensorflow as tf
 import h5py
 from preprocess import preprocess_image
 
-current_dir = os.getcwd()
-os.chdir('../../jaerock/oscar/neural_net')
-from config import Config
-os.chdir(current_dir)
+sys.path.append('../../jaerock/oscar/neural_net')
+import config
 
-conf = Config().config
+conf = config.Config().config
 
 init_height = conf['lc_init_img_height']
 init_width = conf['lc_init_img_width']
