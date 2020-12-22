@@ -11,7 +11,8 @@ import tensorflow as tf
 import h5py
 from preprocess import preprocess_image
 
-sys.path.append('../../jaerock/oscar/neural_net')
+ce491_path = os.environ['CE491_PATH']
+sys.path.append('{}/neural_net'.format(ce491_path))
 import config
 
 conf = config.Config().config
